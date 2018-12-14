@@ -1,15 +1,17 @@
 package org.radekbor.domains.user;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-public class User extends BaseEntity {
+public class User {
+
+    @Id
+    @SequenceGenerator(name="user_id_gen", sequenceName="USER_ID_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_gen")
+    private Long id;
 
     private User() {
         // For Hibernate
@@ -51,4 +53,7 @@ public class User extends BaseEntity {
     private boolean active;
 
 
+    public Long getId() {
+        return id;
+    }
 }
