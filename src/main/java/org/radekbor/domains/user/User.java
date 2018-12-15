@@ -9,23 +9,30 @@ import java.util.stream.Collectors;
 public class User {
 
     @Id
-    @SequenceGenerator(name="user_id_gen", sequenceName="USER_ID_SEQ")
+    @SequenceGenerator(name = "user_id_gen", sequenceName = "USER_ID_SEQ")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_gen")
     private Long id;
+
+    private String username;
+
+    private String email;
+
+    private String password;
 
     private User() {
         // For Hibernate
     }
 
-    public User(String username, String password, List<Role> roles, boolean isActive) {
+    public User(String username, String password, String email, List<Role> roles, boolean isActive) {
         this.username = username;
         this.password = password;
+        this.email = email;
         this.roles = roles;
         this.active = isActive;
     }
 
-    public static User createActiveUser(String username, String password, List<Role> roles) {
-        return new User(username, password, roles, true);
+    public static User createActiveUser(String username, String password, String email, List<Role> roles) {
+        return new User(username, password, email, roles, true);
     }
 
     public String getPassword() {
@@ -44,10 +51,6 @@ public class User {
         return roles.stream().map(Role::getName).collect(Collectors.toList());
     }
 
-    private String username;
-
-    private String password;
-
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Role> roles;
     private boolean active;
@@ -55,5 +58,14 @@ public class User {
 
     public Long getId() {
         return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String changeEmail(String newEmail) {
+        this.email = newEmail;
+        return this.email;
     }
 }

@@ -5,8 +5,10 @@
  */
 package org.radekbor.domains.user;
 
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.radekbor.domains.user.account.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,23 +27,29 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserRepository repo;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return repo
                 .findByUsername(username)
-                .map(u -> new org.springframework.security.core.userdetails.User(
-                        u.getUsername(),
-                        u.getPassword(),
-                        u.isActive(),
-                        u.isActive(),
-                        u.isActive(),
-                        u.isActive(),
-                        AuthorityUtils.createAuthorityList(
-                                u.getRolesNames()
-                                        .stream()
-                                        .map(r -> "ROLE_" + r.toUpperCase())
-                                        .collect(Collectors.toList())
-                                        .toArray(new String[]{}))))
+                .map(this::mapUserToUserDetails)
                 .orElseThrow(() -> new UsernameNotFoundException("No user with the name " + username));
+    }
+
+    private CustomUserDetails mapUserToUserDetails(User u) {
+        return new CustomUserDetails(
+                u.getId(),
+                u.getUsername(),
+                u.getEmail(),
+                u.getPassword(),
+                u.isActive(),
+                u.isActive(),
+                u.isActive(),
+                u.isActive(),
+                AuthorityUtils.createAuthorityList(
+                        u.getRolesNames()
+                                .stream()
+                                .map(r -> "ROLE_" + r.toUpperCase())
+                                .collect(Collectors.toList())
+                                .toArray(new String[]{})));
     }
 
 }

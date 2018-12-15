@@ -4,6 +4,7 @@ CREATE TABLE USER (
   id int not null default user_id_seq.nextval,
   username varchar(255) not null,
   password varchar(255) not null,
+  emailg varchar(255) not null,
   active int(2),
   CONSTRAINT PK_USER PRIMARY KEY (id)
 );

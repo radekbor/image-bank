@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -23,12 +24,17 @@ public class UserService {
 
     private RoleRepository roleRepository;
 
-    User createUser(String userName, String password) {
+    public User createUser(String userName, String email, String password) {
         String encodedPass = passwordEncoder.encode(password);
-        Optional<Role> byId = roleRepository.findById(1L);
-        User activeUser = User.createActiveUser(userName, encodedPass, Collections.singletonList(byId.get()));
+        List<Role> roles = roleRepository.findById(1L).map(Collections::singletonList).orElseGet(ArrayList::new);
+        User activeUser = User.createActiveUser(userName, encodedPass, email, roles);
         return repo.save(activeUser);
     }
 
 
+    public String changeUserEmail(User user, String newEmail) {
+        String changeEmail = user.changeEmail(newEmail);
+        repo.save(user);
+        return changeEmail;
+    }
 }
