@@ -1,6 +1,7 @@
 package org.radekbor.domains.user;
 
 import org.radekbor.domains.user.account.CustomUserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,11 +11,14 @@ import java.security.Principal;
 @RestController
 public class UserInfoController {
 
+    private CustomUserDetails getDetails() {
+        return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+    }
+
     @GetMapping(value = "/my")
-    public UserInfo userName(Principal principal) {
-        OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) principal;
-        CustomUserDetails details = (CustomUserDetails) oAuth2Authentication.getUserAuthentication().getPrincipal();
-        return new UserInfo(oAuth2Authentication.getName(), details.getEmail(), details.getId());
+    public UserInfo userName() {
+        CustomUserDetails details = getDetails();
+        return new UserInfo(details.getUsername(), details.getEmail(), details.getId());
     }
 
     static class UserInfo {
