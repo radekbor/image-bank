@@ -3,6 +3,7 @@ package org.radekbor.domains.user.account;
 import org.radekbor.domains.user.User;
 import org.radekbor.domains.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,10 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 
 @RestController
-public class RegistrationController {
+public class UserAccountController {
+
 
     @Autowired
-    RegistrationController(UserService service) {
+    UserAccountController(UserService service) {
         this.service = service;
     }
 
@@ -28,9 +30,13 @@ public class RegistrationController {
     }
 
     @PutMapping("/email/change")
-    public String changeEmail(Principal principal, @RequestBody String newEmail) {
-        OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) principal;
-        User user = (User)oAuth2Authentication.getPrincipal();
-        return service.changeUserEmail(user, newEmail);
+    public String changeEmail(@RequestBody ChangeEmailCommand newEmail) {
+        CustomUserDetails details = getDetails();
+        return service.changeUserEmail(details, newEmail.getEmail());
     }
+
+    private CustomUserDetails getDetails() {
+        return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
 }

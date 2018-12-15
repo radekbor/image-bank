@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ImgBankApp.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class RegistrationControllerFT {
+public class UserAccountControllerFT {
 
     @Test
     public void registerAndGetUserDetails() {

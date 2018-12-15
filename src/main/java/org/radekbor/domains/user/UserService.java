@@ -1,5 +1,7 @@
 package org.radekbor.domains.user;
 
+import org.radekbor.domains.user.account.ChangeEmailCommand;
+import org.radekbor.domains.user.account.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,8 @@ public class UserService {
     }
 
 
-    public String changeUserEmail(User user, String newEmail) {
+    public String changeUserEmail(CustomUserDetails userDetails, String newEmail) {
+        User user = repo.getOne(userDetails.getId());
         String changeEmail = user.changeEmail(newEmail);
         repo.save(user);
         return changeEmail;
