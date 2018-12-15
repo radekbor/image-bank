@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
+import java.io.File;
 import java.util.Base64;
 
 import static com.jayway.restassured.RestAssured.given;
@@ -24,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RegistrationControllerFT {
 
     @Test
-    public void registerAndGetUserName() {
+    public void registerAndGetUserDetails() {
 
         String userName = "Jane";
         String password = "test";
@@ -70,5 +71,6 @@ public class RegistrationControllerFT {
         assertThat(returnedId).isEqualTo(id);
         assertThat(returnedName).isEqualTo(userName);
         assertThat(returnedEmail).isEqualTo(returnedEmail);
+
     }
 }
