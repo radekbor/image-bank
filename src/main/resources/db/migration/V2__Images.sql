@@ -11,7 +11,7 @@ CREATE SEQUENCE image_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE Image (
   id int not null default image_id_seq.nextval,
-  details_id int not null,
+  image_details int not null,
   image_type varchar(255) not null,
   bytes bytea not null,
   CONSTRAINT PK_IMAGE PRIMARY KEY (id)

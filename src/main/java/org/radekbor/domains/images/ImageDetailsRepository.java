@@ -9,5 +9,6 @@ public interface ImageDetailsRepository extends JpaRepository<ImageDetails, Long
     Page<ImageDetails> findAllByUserId(long id, Pageable pageable);
 
     @Query("select details from ImageDetails details where details.userId = ?1 and details.name like %?2%")
-    Page<ImageDetails> findAllByUserWithName(long id, String name, Pageable pageable);
+    Page<ImageDetails> findAllByUserIdAndName(long id, String name, Pageable pageable);
+
 }

@@ -17,7 +17,7 @@ public class ImageDetails {
 
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "imageDetails")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "imageDetails", cascade=CascadeType.PERSIST)
     private List<Image> images = new ArrayList<>();
 
 

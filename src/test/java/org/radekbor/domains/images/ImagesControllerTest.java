@@ -34,7 +34,7 @@ public class ImagesControllerTest {
         Authentication authentication = mock(Authentication.class);
         CustomUserDetails customUserDetails = mock(CustomUserDetails.class);
         when(customUserDetails.getId()).thenReturn(USER_ID);
-        when(authentication.getDetails()).thenReturn(customUserDetails);
+        when(authentication.getPrincipal()).thenReturn(customUserDetails);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
@@ -52,6 +52,7 @@ public class ImagesControllerTest {
                 .file(firstFile))
                 .andExpect(status().is(200))
                 .andExpect(content().string("1"));
+
 
     }
 }

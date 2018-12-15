@@ -37,7 +37,7 @@ public class ImagesController {
 
     // TODO extract to another bean
     private CustomUserDetails getDetails() {
-        return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     @PostMapping(value = "/images/upload")
@@ -50,9 +50,13 @@ public class ImagesController {
     }
 
     @GetMapping(value = "/images")
-    public Page<ImageInformation> getImages(@RequestParam("name") String name, Pageable pageable) {
+    public Page<ImageInformation> getImages(@RequestParam(value = "name", required = false) String name, Pageable pageable) {
         CustomUserDetails details = getDetails();
-        return imageFetchService.getUserImages(details.getId(), name, pageable);
+        if (name == null) {
+            return imageFetchService.getUserImages(details.getId(), pageable);
+        } else {
+            return imageFetchService.getUserImages(details.getId(), name, pageable);
+        }
     }
 
 
@@ -72,9 +76,8 @@ public class ImagesController {
 
     @DeleteMapping(value = "/images/{imageDetailsId}")
     public void deleteImage(@PathVariable("imageDetailsId") long imageDetailsId) throws IllegalAccessException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails user = (CustomUserDetails) authentication.getDetails();
+        CustomUserDetails details = getDetails();
 
-        imageDeleteService.deleteImage(imageDetailsId, user.getId());
+        imageDeleteService.deleteImage(imageDetailsId, details.getId());
     }
 }

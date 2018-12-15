@@ -6,13 +6,11 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-
 @RestController
 public class UserInfoController {
 
     private CustomUserDetails getDetails() {
-        return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     @GetMapping(value = "/my")
