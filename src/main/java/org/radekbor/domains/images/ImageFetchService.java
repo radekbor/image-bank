@@ -30,4 +30,9 @@ public class ImageFetchService {
     public Image getImage(long id) {
         return imageRepository.getOne(id);
     }
+
+    public Page<ImageInformation> getUserImages(long id, String name, Pageable pageable) {
+        Page<ImageDetails> allByUserId = imageDetailsRepository.findAllByUserWithName(id, name, pageable);
+        return allByUserId.map(this::convert);
+    }
 }

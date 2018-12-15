@@ -13,9 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.websocket.server.PathParam;
 import java.io.IOException;
-import java.util.ArrayList;
 
 
 @RestController
@@ -23,13 +21,17 @@ public class ImagesController {
 
 
     @Autowired
-    ImagesController(ImageSaveService imageSaveService) {
+    ImagesController(ImageSaveService imageSaveService, ImageFetchService imageFetchService, ImageDeleteService imageDeleteService) {
         this.imageSaveService = imageSaveService;
+        this.imageFetchService = imageFetchService;
+        this.imageDeleteService = imageDeleteService;
     }
 
     private ImageSaveService imageSaveService;
 
     private ImageFetchService imageFetchService;
+
+    private ImageDeleteService imageDeleteService;
 
     @PostMapping(value = "/images/upload")
     public Long addImage(@RequestParam("file") MultipartFile file) throws IOException {
@@ -42,13 +44,14 @@ public class ImagesController {
     }
 
     @GetMapping(value = "/images")
-    public Page<ImageInformation> getImages(Pageable pageable) {
+    public Page<ImageInformation> getImages(@RequestParam("name") String name, Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails details = (CustomUserDetails) authentication.getDetails();
-        return imageFetchService.getUserImages(details.getId(), pageable);
+        return imageFetchService.getUserImages(details.getId(), name, pageable);
     }
 
-    @GetMapping(value = "/images/{id}")
+
+    @GetMapping(value = "/images/download/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable("id") long id) throws IllegalAccessException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails details = (CustomUserDetails) authentication.getDetails();
@@ -63,5 +66,13 @@ public class ImagesController {
         headers.setCacheControl(CacheControl.noCache().getHeaderValue());
 
         return new ResponseEntity<>(image.getBytes(), headers, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/images/{imageDetailsId}")
+    public void deleteImage(@PathVariable("imageDetailsId") long imageDetailsId) throws IllegalAccessException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails user = (CustomUserDetails) authentication.getDetails();
+
+        imageDeleteService.deleteImage(imageDetailsId, user.getId());
     }
 }

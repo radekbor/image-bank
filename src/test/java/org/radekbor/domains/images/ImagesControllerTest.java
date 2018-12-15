@@ -3,19 +3,15 @@ package org.radekbor.domains.images;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.radekbor.ImgBankApp;
 import org.radekbor.domains.user.account.CustomUserDetails;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -27,7 +23,9 @@ public class ImagesControllerTest {
 
     private MockMvc mockMvc;
     private ImageSaveService imageSaveService = mock(ImageSaveService.class);
-    private ImagesController controller = new ImagesController(imageSaveService);
+    private ImageFetchService imageFetchService = mock(ImageFetchService.class);
+    private ImageDeleteService imageDeleteService = mock(ImageDeleteService.class);
+    private ImagesController controller = new ImagesController(imageSaveService, imageFetchService, imageDeleteService);
 
     private static final long USER_ID = 1L;
 
