@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.radekbor.ImgBankApp;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,11 +22,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ImgBankApp.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserAccountControllerFT {
+
+    @Value("${local.server.port}")
+    private int port;
 
     @Test
     public void registerAndGetUserDetails() {
+
+        String url = "http://localhost:" + port;
 
         String userName = "Jane";
         String password = "test";
@@ -37,7 +43,7 @@ public class UserAccountControllerFT {
 
         Response response = given().body(registerJson.toString())
                 .contentType(ContentType.JSON)
-                .post("/register")
+                .post(url + "/register")
                 .andReturn();
 
         Integer id = response.getBody().as(Integer.class);
@@ -51,7 +57,7 @@ public class UserAccountControllerFT {
                 .param("grant_type", "password")
                 .param("username", userName)
                 .param("password", password)
-                .post("/oauth/token")
+                .post(url + "/oauth/token")
                 .andReturn().getBody();
 
         String token = loginResponse.jsonPath().get("access_token");
@@ -60,7 +66,7 @@ public class UserAccountControllerFT {
 
         ResponseBody body = given()
                 .param("access_token", token)
-                .get("/my")
+                .get(url + "/my")
                 .andReturn()
                 .getBody();
 

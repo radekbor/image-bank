@@ -1,7 +1,6 @@
 package org.radekbor.domains.images;
 
 import org.radekbor.domains.user.account.CustomUserDetails;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,9 +8,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,10 +20,14 @@ public class ImagesController {
 
 
     @Autowired
-    ImagesController(ImageSaveService imageSaveService, ImageFetchService imageFetchService, ImageDeleteService imageDeleteService) {
+    ImagesController(ImageSaveService imageSaveService,
+                     ImageFetchService imageFetchService,
+                     ImageDeleteService imageDeleteService,
+                     ImageTypeValidator imageTypeValidator) {
         this.imageSaveService = imageSaveService;
         this.imageFetchService = imageFetchService;
         this.imageDeleteService = imageDeleteService;
+        this.imageTypeValidator = imageTypeValidator;
     }
 
     private ImageSaveService imageSaveService;
@@ -34,6 +35,7 @@ public class ImagesController {
     private ImageFetchService imageFetchService;
 
     private ImageDeleteService imageDeleteService;
+    private ImageTypeValidator imageTypeValidator;
 
     // TODO extract to another bean
     private CustomUserDetails getDetails() {
@@ -43,7 +45,9 @@ public class ImagesController {
     @PostMapping(value = "/images/upload")
     public Long addImage(@RequestParam("file") MultipartFile file) throws IOException {
         CustomUserDetails details = getDetails();
-
+        if (!imageTypeValidator.isImage(file)) {
+            throw new IllegalArgumentException();
+        }
         ImageDetails imageDetails = new ImageDetails(details.getId(), file.getName());
         ImageDetails saved = imageSaveService.save(imageDetails, file.getBytes());
         return saved.getId();
