@@ -2,7 +2,7 @@ CREATE SEQUENCE user_id_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE users (
   id int not null default nextval('user_id_seq'),
-  username varchar(255) not null,
+  username varchar(255) unique not null,
   password varchar(255) not null,
   email varchar(255) not null,
   active BOOLEAN,
