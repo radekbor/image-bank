@@ -22,7 +22,6 @@ public class Image {
     @JoinColumn(name = "image_details")
     private ImageDetails imageDetails;
 
-    @Lob
     @Column(name = "bytes", columnDefinition = "BLOB")
     private byte[] bytes;
 

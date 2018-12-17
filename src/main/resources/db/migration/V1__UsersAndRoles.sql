@@ -1,26 +1,26 @@
-CREATE SEQUENCE USER_ID_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE user_id_seq START WITH 1 INCREMENT BY 1;
 
-CREATE TABLE USER (
-  id int not null default user_id_seq.nextval,
+CREATE TABLE users (
+  id int not null default nextval('user_id_seq'),
   username varchar(255) not null,
   password varchar(255) not null,
   email varchar(255) not null,
-  active int(2),
+  active BOOLEAN,
   CONSTRAINT PK_USER PRIMARY KEY (id)
 );
 
-CREATE SEQUENCE ROLES_ID_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE roles_id_seq START WITH 1 INCREMENT BY 1;
 
-CREATE TABLE ROLE (
-  id int not null default roles_id_seq.nextval,
+CREATE TABLE role (
+  id int not null default  nextval('roles_id_seq'),
   name varchar(30) not null,
   CONSTRAINT PK_ROLE PRIMARY KEY (id)
 );
 
-CREATE TABLE USER_ROLES (
+CREATE TABLE users_roles (
   user_id int not null,
   roles_id int not null,
   CONSTRAINT PK_USER_ROLES PRIMARY KEY (user_id, roles_id)
 );
 
-INSERT INTO ROLE (id, name) VALUES (roles_id_seq.nextval, 'user');
+INSERT INTO role (name) VALUES ('user');

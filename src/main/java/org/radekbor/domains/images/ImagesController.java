@@ -4,15 +4,13 @@ import org.radekbor.domains.user.account.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 @RestController
@@ -48,7 +46,7 @@ public class ImagesController {
         if (!imageTypeValidator.isImage(file)) {
             throw new IllegalArgumentException();
         }
-        ImageDetails imageDetails = new ImageDetails(details.getId(), file.getName());
+        ImageDetails imageDetails = new ImageDetails(details.getId(), file.getOriginalFilename());
         ImageDetails saved = imageSaveService.save(imageDetails, file.getBytes());
         return saved.getId();
     }
@@ -72,10 +70,16 @@ public class ImagesController {
             throw new IllegalAccessException("FORBIDDEN");
         }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
-
-        return new ResponseEntity<>(image.getBytes(), headers, HttpStatus.OK);
+        byte[] bytes = image.getBytes();
+        Optional<MediaType> mediaType = imageTypeValidator.getType(bytes);
+        if (mediaType.isPresent()) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(mediaType.get());
+            headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+        } else {
+            throw new IllegalStateException();
+        }
     }
 
     @DeleteMapping(value = "/images/{imageDetailsId}")

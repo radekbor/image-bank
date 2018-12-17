@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0cdae2ca-23af-4a9a-a7c8-10416dbb6942",
+		"_postman_id": "b610b5fa-a44b-44c9-b897-b177c7c2490a",
 		"name": "ImageBankFlow",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -19,7 +19,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"userName\": \"Radek\",\n\t\"password\": \"blabla\"\n}"
+					"raw": "{\n\t\"userName\": \"John\",\n\t\"email\": \"john.doe@net.com\",\n\t\"password\": \"blabla\"\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8080/register",
@@ -46,7 +46,7 @@
 							"pm.test(\"store token\", function () {",
 							"    var jsonData = pm.response.json();",
 							"",
-							"    pm.environment.set(\"token\", jsonData.access_token);",
+							"    pm.globals.set(\"token\", jsonData.access_token);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -116,6 +116,16 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c78d8590-ea59-4fc1-9e4a-05c9e134e36e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -135,15 +145,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/my/name?access_token={{token}}",
+					"raw": "http://localhost:8080/my?access_token={{token}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"my",
-						"name"
+						"my"
 					],
 					"query": [
 						{
@@ -158,14 +167,42 @@
 		{
 			"name": "store image",
 			"request": {
-				"method": "GET",
-				"header": [],
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
 				"body": {
-					"mode": "raw",
-					"raw": ""
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": ""
+						}
+					]
 				},
 				"url": {
-					"raw": ""
+					"raw": "http://localhost:8080/images/upload?access_token={{token}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"images",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						}
+					]
 				}
 			},
 			"response": []
@@ -180,7 +217,21 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": ""
+					"raw": "http://localhost:8080/images?access_token={{token}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"images"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						}
+					]
 				}
 			},
 			"response": []
@@ -195,7 +246,25 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": ""
+					"raw": "http://localhost:8080/images?name=im&access_token={{token}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"images"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "im"
+						},
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						}
+					]
 				}
 			},
 			"response": []
@@ -210,7 +279,23 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": ""
+					"raw": "http://localhost:8080/images/download/1?access_token={{token}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"images",
+						"download",
+						"1"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						}
+					]
 				}
 			},
 			"response": []
@@ -218,14 +303,29 @@
 		{
 			"name": "delete image",
 			"request": {
-				"method": "GET",
+				"method": "DELETE",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
 				"url": {
-					"raw": ""
+					"raw": "http://localhost:8080/images/1?access_token={{token}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"images",
+						"1"
+					],
+					"query": [
+						{
+							"key": "access_token",
+							"value": "{{token}}"
+						}
+					]
 				}
 			},
 			"response": []

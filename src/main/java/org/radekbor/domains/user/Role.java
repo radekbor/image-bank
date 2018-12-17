@@ -3,10 +3,11 @@ package org.radekbor.domains.user;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "role")
 public class Role {
 
     @Id
-    @SequenceGenerator(name="roles_id_gen", sequenceName="ROLES_ID_SEQ")
+    @SequenceGenerator(name="roles_id_gen", sequenceName="roles_id_seq")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_id_gen")
     private Long id;
 

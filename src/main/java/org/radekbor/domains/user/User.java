@@ -1,15 +1,15 @@
 package org.radekbor.domains.user;
 
 import javax.persistence.*;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
-    @SequenceGenerator(name = "user_id_gen", sequenceName = "USER_ID_SEQ")
+    @SequenceGenerator(name = "user_id_gen", sequenceName = "user_id_seq")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_gen")
     private Long id;
 
